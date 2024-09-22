@@ -35,9 +35,24 @@ token == $1 peg.
 * - Algorithmically Stable
 * It is similar to DAI if DAI had no governance, no fees, and was only backed by WETH and WBTC.
 *
+* DSC system should always be overcolleratalized. At no point should the value of collateral be less than or equal to value of all the DSC
 * @notice This contract is the core of the DSC System. It handles all the logic for mining
 and redeeming DSC, as well as depositing & withdrawing collateral.
 */
 contract DSCEngine {
+    function depositCollateralAndMintDsc() external {}
 
+    function depositCollateral() external {}
+
+    function redeemCollateralForDsc() external {}
+
+    function redeemCollateral() external {}
+
+    function mintDsc() external {}
+
+    function burnDsc() external {}
+
+    function liquidate() external {}
+
+    function getHealthFactor() external view {}
 }
