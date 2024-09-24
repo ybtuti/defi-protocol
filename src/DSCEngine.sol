@@ -54,6 +54,8 @@ contract DSCEngine is ReentrancyGuard {
     ///////////////////////////
     ///// State Variables /////
     ///////////////////////////
+    uint256 private constant ADDITIONAL_FEED_PRECISION = 1e10;
+    uint256 private constant PRECISION = 1e18;
 
     mapping(address token => address priceFeed) private s_priceFeeds;
     mapping(address user => mapping(address token => uint256 amount)) private s_collateralDeposited;
@@ -146,7 +148,7 @@ contract DSCEngine is ReentrancyGuard {
 
     function getHealthFactor() external view {}
 
-    ////////////////////////////////////////
+    /////////@chainlink/contracts/=lib/chainlink-contracts////////////////////////////////
     ///// Private & Internal View Functions /////
     ////////////////////////////////////////
 
@@ -180,14 +182,22 @@ contract DSCEngine is ReentrancyGuard {
     ///// Public & external View Functions /////
     ////////////////////////////////////////////
 
-    function getAccountCollateralValue(address user) public view returns (uint256) {
+    function getAccountCollateralValue(address user) public view returns (uint256 totalCollateralValueInUsd) {
         //loop through each collateral token, get the amount they have deposited and map it
         // the price, to get the usd value
         for (uint256 i = 0; i < s_collateralTokens.length; i++) {
             address token = s_collateralTokens[i];
             uint256 amount = s_collateralDeposited[user][token];
+            totalCollateralValueInUsd += getUsdValue(token, amount);
         }
+        return totalCollateralValueInUsd;
     }
 
-    function getUsdValue(address token, uint256 amount) public view returns (uint256) {}
+    function getUsdValue(address token, uint256 amount) public view returns (uint256) {
+        //Get the price feed for the token
+        AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
+        //Get the price of the token
+        (, int256 price,,,) = priceFeed.latestRoundData();
+        return ((uint256(price) * ADDITIONAL_FEED_PRECISION) * amount) / PRECISION;
+    }
 }
