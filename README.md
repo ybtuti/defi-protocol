@@ -2,5 +2,8 @@
 2. Stability Mechanism(Minting): Algorithmic(Decentralized)
    1. People can only mint the stablecoin with enough collerteral(Coded)
 3. Collateral: Exogeonous (Crypto)
+
    1. wEth
    2. wBTC
+
+4. What are our invariants/properties?
